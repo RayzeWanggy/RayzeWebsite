@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayze Development | Official Portfolio & Anime Project</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-card: rgba(18, 23, 35, 0.88);
+            --bg-card-hover: rgba(28, 35, 51, 0.95);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --text-primary: #f3f4f6;
+            --text-secondary: #cbd5e1;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+        }
+
+        body {
+            background-color: #0a0d14;
+            background-image: linear-gradient(rgba(10, 13, 20, 0.85), rgba(10, 13, 20, 0.85)), 
+                              url('https://files.catbox.moe/xw3uch.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow: hidden; /* Mencegah scroll di Halaman 1 */
+            
+            /* 120 FPS HIGH PERFORMANCE RENDER */
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ------------------------------------
+           HALAMAN 1 (WELCOME SCREEN TERKUNCI & BERGOYANG)
+        ------------------------------------ */
+        #page-1 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
+            background: linear-gradient(rgba(10, 13, 20, 0.92), rgba(10, 13, 20, 0.95)), 
+                        url('https://files.catbox.moe/xw3uch.jpg') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #page-1.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .card-goyang {
+            animation: floatSway 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatSway {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(0.8deg); }
+            100% { transform: translateY(8px) rotate(-0.8deg); }
+        }
+
+        .welcome-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-enter {
+            padding: 16px 36px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-enter:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.7);
+        }
+
+        /* ------------------------------------
+           PEMUTAR MUSIK MELAYANG (FLOATING 120 FPS)
+        ------------------------------------ */
+        .music-player {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(18, 23, 35, 0.95);
+            border: 1px solid var(--accent-cyan);
+            padding: 10px 18px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            user-select: none;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .music-icon {
+            font-size: 1.2rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .music-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        /* ------------------------------------
+           HALAMAN 2 (MAIN CONTENT)
+        ------------------------------------ */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 0;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #0a0d14;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.1s ease;
+        }
+
+        .hero {
+            padding: 80px 0 60px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--accent-green);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 35px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: transform 0.1s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-tag {
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .anime-box {
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-left: 5px solid var(--accent-purple);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .side-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            height: fit-content;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .private-tag {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .channel-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 22px;
+            border-radius: 14px;
+            transition: transform 0.1s ease, border-color 0.1s ease;
+        }
+
+        .channel-card:hover {
+            border-color: var(--accent-cyan);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .channel-icon {
+            font-size: 2rem;
+            width: 55px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ------------------------------------
+           GLOBAL CHAT SERVER REALTIME
+        ------------------------------------ */
+        .chat-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+        }
+
+        .chat-header {
+            background: rgba(10, 13, 20, 0.8);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-msg {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 85%;
+            word-break: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-user {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-pink);
+            margin-bottom: 3px;
+        }
+
+        .chat-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(10, 13, 20, 0.8);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            background: #0a0d14;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 12px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-nick {
+            width: 30%;
+        }
+
+        .input-msg {
+            flex: 1;
+        }
+
+        .chat-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .contact-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: #0a0d14;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 850px) {
+            .about-content { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.6rem; }
+            .nav-links { display: none; }
+            .chat-form { flex-direction: column; }
+            .input-nick { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HALAMAN 1 (WELCOME SCREEN TERKUNCI & BERGOYANG) -->
+    <div id="page-1">
+        <div class="card-goyang">
+            <h1 class="welcome-title">Rayze Development</h1>
+            <p class="welcome-subtitle">Developer, Anime Project & Digital Experience</p>
+            <button class="btn-enter" onclick="enterPageTwo()">
+                <span>click untuk lanjut</span> 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- AUDIO PLAYER -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://files.catbox.moe/nfjl9h.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- FLOATING MUSIC PLAYER (120 FPS TRACKING) -->
+    <div class="music-player" id="music-btn" onclick="toggleMusic()">
+        <span class="music-icon" id="music-icon">🎵</span>
+        <span class="music-text" id="music-status">Musik: Memutar 🎵</span>
+    </div>
+
+    <!-- HALAMAN 2 (MAIN WEBSITE) -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">RAYZE DEVELOPMENT</a>
+            <ul class="nav-links">
+                <li><a href="#about">Tentang Rayze</a></li>
+                <li><a href="#anime">Anime Project</a></li>
+                <li><a href="#saluran">Saluran Komunitas</a></li>
+                <li><a href="#chat-global">Global Chat</a></li>
+                <li><a href="#kirim-pesan">Kirim Email</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="status-badge">
+                <span class="status-dot"></span> Building Anime Projects & Roblox Universe
+            </div>
+            <h1>Halo, Gue <span>Rayze</span> 👋<br>Rayze Development.</h1>
+            <p class="hero-subtitle">
+                Selamat datang di website resmi Rayze Development! Tempat berbagi seputar pengembangan game Roblox, ekosistem web modern, serta proyek **Anime Project** yang sedang dikembangkan.
+            </p>
+            <div class="hero-buttons">
+                <a href="#saluran" class="btn btn-primary">🚀 Gabung Saluran Rayze</a>
+                <a href="#kirim-pesan" class="btn btn-secondary">📩 Kirim Pesan Ke Gmail</a>
+            </div>
+        </section>
+
+        <!-- TENTANG & ANIME PROJECT -->
+        <section class="section" id="about">
+            <div class="section-header">
+                <span class="section-tag">// PERKENALAN LENGKAP</span>
+                <h2 class="section-title">Siapa Rayze Development?</h2>
+            </div>
+
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        Nama gue **Rayze**, pendiri dari **Rayze Development**. Gue adalah seorang kreator digital dan pengembang yang sangat terdorong oleh kreativitas di dunia virtual, pemrograman, dan ekosistem visual. Fokus utama ada di dunia **Roblox Development** (pengembangan skrip Luau, peta interaktif, sistem UI), kodingan **Web Frontend**, hingga pembuatan proyek berbasis **Anime**.
+                    </p>
+                    <p>
+                        Bagi gue, mengombinasikan logika algoritma dengan estetika dunia anime adalah kombinasi yang sangat seru. Rayze Development selalu berusaha menciptakan karya yang bukan cuma keren secara visual, tapi juga responsif, stabil, dan menyenangkan saat dimainkan atau diakses oleh banyak orang.
+                    </p>
+
+                    <div class="anime-box" id="anime">
+                        <h3 style="color: var(--accent-pink);">🎬 Special Highlight: Rayze Anime Project</h3>
+                        <p style="margin-bottom: 10px;">
+                            Rayze Development sedang menggarap dan mengembangkan **Anime Project**—sebuah proyek fusi kreasi antara dunia anime yang kaya akan alur cerita & karakter unik, yang diintegrasikan ke dalam lingkungan interaktif (Roblox & Web Experience).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="side-card">
+                    <h3>⚡ Profile Overview</h3>
+                    <ul class="info-list">
+                        <li><span>Nama Studio</span> <span>Rayze Development</span></li>
+                        <li><span>Gmail</span> <span class="private-tag">Protected / Private</span></li>
+                        <li><span>Nomor WA</span> <span class="private-tag">Protected / Private</span></li>
+                        <li><span>Roblox User</span> <span>RayzeSayonara</span></li>
+                        <li><span>TikTok</span> <span>@xxlrayze</span></li>
+                        <li><span>Telegram</span> <span>@RayzeAnime</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SALURAN RESMI (BISA DIKLIK, TIDAK RESET HALAMAN) -->
+        <section class="section" id="saluran">
+            <div class="section-header">
+                <span class="section-tag">// SALURAN RESMI</span>
+                <h2 class="section-title">Klik Untuk Masuk Ke Saluran Rayze</h2>
+            </div>
+
+            <div class="channels-grid">
+                <a href="https://whatsapp.com/channel/0029Vb8KFvB5K3zXkMDEiv1M" target="_blank" class="channel-card">
+                    <div class="channel-icon">📢</div>
+                    <div>
+                        <h4>Saluran WhatsApp</h4>
+                        <p style="font-size:0.85rem; color: var(--text-secondary);">Update penting & kabar proyek</p>
+                    </div>
+                </a>
+
+                <a href="https://wa.me/6283152561195" target="_blank" class="channel-card">
+                    <div class="channel-icon">💬</div>
+                    <div>
+                        <h4>WhatsApp Personal</h4>
+                        <p style="font-size:0.85rem; color: var(--text-secondary);">+62 831-5256-**** (Privat)</p>
+                    </div>
+                </a>
+
+                <a href="https://t.me/RayzeAnime" target="_blank" class="channel-card">
+                    <div class="channel-icon">✈️</div>
+                    <div>
+                        <h4>Telegram Rayze</h4>
+                        <p style="font-size:0.85rem; color: var(--text-secondary);">@RayzeAnime</p>
+                    </div>
+                </a>
+
+                <a href="https://www.tiktok.com/@xxlrayze" target="_blank" class="channel-card">
+                    <div class="channel-icon">🎵</div>
+                    <div>
+                        <h4>TikTok Official</h4>
+                        <p style="font-size:0.85rem; color: var(--text-secondary);">@xxlrayze</p>
+                    </div>
+                </a>
+
+                <a href="https://www.roblox.com/users/search?keyword=RayzeSayonara" target="_blank" class="channel-card">
+                    <div class="channel-icon">🎮</div>
+                    <div>
+                        <h4>Profil Roblox</h4>
+                        <p style="font-size:0.85rem; color: var(--text-secondary);">RayzeSayonara</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- GLOBAL CHAT SERVER REALTIME -->
+        <section class="section" id="chat-global">
+            <div class="section-header" style="text-align: center;">
+                <span class="section-tag">// SERVER CHAT PUBLIK</span>
+                <h2 class="section-title">Global Chat Server Rayze</h2>
+                <p style="color: var(--text-secondary); margin-top:5px;">Ngobrol langsung secara realtime bareng sesama pengunjung website di sini!</p>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>💬 Global Chat Room</h3>
+                    <span style="font-size: 0.8rem; color: var(--accent-green);">🟢 Live Server</span>
+                </div>
+                <div class="chat-messages" id="chat-box">
+                    <div class="chat-msg">
+                        <div class="chat-user">System Bot</div>
+                        <div class="chat-text">Selamat datang di Global Chat Server Rayze Development! Silakan masukkan nama kamu dan mulai mengobrol.</div>
+                    </div>
+                </div>
+                <form class="chat-form" onsubmit="sendChatMessage(event)">
+                    <input type="text" id="chat-nick" class="chat-input input-nick" placeholder="Nama Kamu..." required>
+                    <input type="text" id="chat-msg" class="chat-input input-msg" placeholder="Ketik pesan publik..." required>
+                    <button type="submit" class="chat-btn">Kirim 🚀</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FORM KIRIM EMAIL KE RAYZE (AJAX SAFE FETCH) -->
+        <section class="section" id="kirim-pesan">
+            <div class="section-header" style="text-align: center;">
+                <span class="section-tag">// FORMULIR KONTAK AMAN</span>
+                <h2 class="section-title">Kirim Pesan Langsung Ke Email Rayze</h2>
+            </div>
+
+            <div class="contact-box">
+                <form id="contactForm" onsubmit="submitForm(event)">
+                    <div class="form-group">
+                        <label>Nama Kamu</label>
+                        <input type="text" name="name" class="form-control" placeholder="Masukkan nama..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Kamu</label>
+                        <input type="email" name="email" class="form-control" placeholder="namakamu@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Isi Pesan</label>
+                        <textarea name="message" class="form-control" placeholder="Tuliskan pesan..." required></textarea>
+                    </div>
+                    <button type="submit" id="btnSubmitForm" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        📨 Kirim Pesan Ke Rayze Development
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2026 <strong>Rayze Development</strong>. Built with 120 FPS speed, privacy & passion.</p>
+        </footer>
+    </div>
+
+    <!-- SCRIPT ENTRY, MUSIC, 120 FPS SCROLL, AJAX FORM & REALTIME CHAT -->
+    <script>
+        const audio = document.getElementById('bg-music');
+        const musicStatus = document.getElementById('music-status');
+        const musicBtn = document.getElementById('music-btn');
+        const page1 = document.getElementById('page-1');
+        let isPlaying = false;
+
+        // FUNGSI UNLOCK HALAMAN 2
+        function enterPageTwo() {
+            page1.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+
+            audio.play().then(() => {
+                isPlaying = true;
+                musicStatus.innerText = "Musik: Memutar 🎵";
+            }).catch(() => {
+                isPlaying = false;
+                musicStatus.innerText = "Klik untuk Musik 🔊";
+            });
+        }
+
+        // TOGGLE MUSIK MANUAL
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                musicStatus.innerText = "Musik: Mati 🔇";
+            } else {
+                audio.play();
+                isPlaying = true;
+                musicStatus.innerText = "Musik: Memutar 🎵";
+            }
+        }
+
+        /* 120 FPS HIGH PERFORMANCE SCROLL ENGINE */
+        let latestScrollY = 0;
+        let ticking = false;
+
+        function updatePosition() {
+            musicBtn.style.transform = `translate3d(0, ${latestScrollY * 0.12}px, 0)`;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            latestScrollY = window.scrollY;
+            if (!ticking) {
+                window.requestAnimationFrame(updatePosition);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        /* AJAX EMAIL SUBMIT (TIDAK AKAN RESET / REFRESH HALAMAN) */
+        function submitForm(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnSubmitForm');
+            const form = document.getElementById('contactForm');
+            btn.innerText = "Mengirim...";
+            btn.disabled = true;
+
+            const formData = new FormData(form);
+
+            fetch("https://formspree.io/f/mjyvapwq", {
+                method: "POST",
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    alert("Pesan kamu berhasil terkirim ke Gmail Rayze!");
+                    form.reset();
+                } else {
+                    alert("Gagal mengirim pesan. Silakan coba lagi.");
+                }
+                btn.innerText = "📨 Kirim Pesan Ke Rayze Development";
+                btn.disabled = false;
+            }).catch(error => {
+                alert("Terjadi kesalahan koneksi.");
+                btn.innerText = "📨 Kirim Pesan Ke Rayze Development";
+                btn.disabled = false;
+            });
+        }
+
+        /* REALTIME GLOBAL CHAT LOGIC (BROADCAST ENGINE) */
+        const chatBox = document.getElementById('chat-box');
+        const channel = new BroadcastChannel('rayze_global_chat');
+
+        // Muat pesan awal dari LocalStorage
+        const savedChats = JSON.parse(localStorage.getItem('rayze_chats') || '[]');
+        savedChats.forEach(item => renderMessage(item.nick, item.msg));
+
+        function sendChatMessage(e) {
+            e.preventDefault();
+            const nick = document.getElementById('chat-nick').value;
+            const msg = document.getElementById('chat-msg').value;
+
+            if (nick.trim() !== "" && msg.trim() !== "") {
+                const data = { nick: nick, msg: msg };
+                
+                // Simpan & Broadcast
+                renderMessage(nick, msg);
+                saveAndBroadcast(data);
+
+                document.getElementById('chat-msg').value = '';
+            }
+        }
+
+        function renderMessage(nick, msg) {
+            const newMsg = document.createElement('div');
+            newMsg.className = 'chat-msg';
+            newMsg.innerHTML = `<div class="chat-user">${escapeHtml(nick)}</div><div class="chat-text">${escapeHtml(msg)}</div>`;
+            chatBox.appendChild(newMsg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function saveAndBroadcast(data) {
+            const current = JSON.parse(localStorage.getItem('rayze_chats') || '[]');
+            current.push(data);
+            if(current.length > 50) current.shift(); // Simpan maks 50 pesan
+            localStorage.setItem('rayze_chats', JSON.stringify(current));
+            channel.postMessage(data);
+        }
+
+        // Terima pesan broadcast dari tab/pengunjung lain
+        channel.onmessage = (event) => {
+            renderMessage(event.data.nick, event.data.msg);
+        };
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>

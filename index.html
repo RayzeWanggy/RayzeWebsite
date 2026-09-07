@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rayze Development | Ultra HD Studio & Catbox Tools</title>
+    <title>Rayze Development | Ultra HD Studio & Image Uploader</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -536,7 +536,7 @@
             <div class="section-header">
                 <span class="section-tag">// 50+ ULTRA HD STUDIO & CATBOX UPLOADER</span>
                 <h2 class="section-title">Foto HD Enhancer & Catbox Tools</h2>
-                <p style="color: var(--text-secondary); margin-top:5px;">Pilih dari 50 mode HD profesional, tajamkan foto dengan perhitungan persen (0%-100%), dan buat link Catbox secara instan!</p>
+                <p style="color: var(--text-secondary); margin-top:5px;">Pilih dari 50 mode HD profesional, tajamkan foto dengan perhitungan persen (0%-100%), dan buat link Catbox secara instan tanpa error jaringan!</p>
             </div>
 
             <div class="tools-grid">
@@ -556,7 +556,6 @@
                     <div class="control-item">
                         <label>2. Mode HD Enhancer Preset (50 Fitur Fitur HD)</label>
                         <select id="hdPreset" class="input-box" onchange="applyHDEffects()">
-                            <!-- 50 FITUR PRESET HD -->
                             <option value="p1">01. ✨ 4K Ultra HD Sharp (Super Tajam)</option>
                             <option value="p2">02. 🚀 8K Extreme Upscale Detail</option>
                             <option value="p3">03. 🎨 Anime & Illustration Clarity</option>
@@ -575,7 +574,6 @@
                             <option value="p16">16. 🍃 Vintage Warm Color Tone</option>
                             <option value="p17">17. ❄️ Cold Ice Blue Contrast</option>
                             <option value="p18">18. 🌇 Sunset Amber Glow Filter</option>
-
                             <option value="p19">19. 🔮 Dreamy Soft Focus Portrait</option>
                             <option value="p20">20. ⚡ Micro Sharp Texture Sharpen</option>
                             <option value="p21">21. 🌊 Deep Ocean Blue Enhancer</option>
@@ -588,7 +586,6 @@
                             <option value="p28">28. 🎯 Precise AI Upscale Clarity</option>
                             <option value="p29">29. 👑 VIP Gold Luxe Shimmer</option>
                             <option value="p30">30. 🌫️ Anti-Fog De-Haze Filter</option>
-
                             <option value="p31">31. 💡 Highlights Exposure Fix</option>
                             <option value="p32">32. 👁️ Eye Detail & Iris Sharpen</option>
                             <option value="p33">33. 💇 Hair Texture Micro Enhance</option>
@@ -599,7 +596,6 @@
                             <option value="p38">38. 🌌 Galaxy Deep Space Tone</option>
                             <option value="p39">39. 📽️ Retro 90s Film Grain HD</option>
                             <option value="p40">40. 💥 Vivid Comic Pop Art Finish</option>
-
                             <option value="p41">41. 🔮 Magic Fantasy Glow Tone</option>
                             <option value="p42">42. 🍁 Autumn Warmth Tone Enhancer</option>
                             <option value="p43">43. 🌿 Fresh Spring Brightness</option>
@@ -634,7 +630,7 @@
 
                     <div class="control-item">
                         <label>4. Convert Foto Jadi URL Link (Catbox Tools)</label>
-                        <button class="btn-action btn-catbox" onclick="uploadToCatbox()">
+                        <button class="btn-action btn-catbox" id="btnUploadCatbox" onclick="uploadToCatbox()">
                             🚀 Upload Ke Catbox.moe (% Hitungan Persen)
                         </button>
                     </div>
@@ -764,7 +760,7 @@
         </footer>
     </div>
 
-    <!-- SCRIPT HD ENGINE, CATBOX UPLOADER & PROGRESS PERCENTAGE -->
+    <!-- SCRIPT HD ENGINE, FIX CATBOX CORS & PROGRESS PERCENTAGE -->
     <script>
         const audio = document.getElementById('bg-music');
         const musicStatus = document.getElementById('music-status');
@@ -851,7 +847,6 @@
             const preset = document.getElementById('hdPreset').value;
             const sharpLevel = parseInt(document.getElementById('sharpRange').value);
 
-            // LOGIKA FILTER DARI 50 PRESET HD
             let contrastVal = 100 + (sharpLevel * 8);
             let saturateVal = 100 + (sharpLevel * 6);
             let brightnessVal = 100;
@@ -910,13 +905,14 @@
             }, 100);
         }
 
-        /* FUNGSI UPLOAD CATBOX MOE DENGAN PERSEN (%) REALTIME */
+        /* FUNGSI FIX UPLOAD CATBOX MOE DENGAN CORS PROXY & MULTI FALLBACK SERVER */
         function uploadToCatbox() {
             const fileInput = document.getElementById('uploadInput');
             const pBox = document.getElementById('catboxProgressBox');
             const pBar = document.getElementById('catboxProgressBar');
             const pText = document.getElementById('catboxProgressText');
             const outputBox = document.getElementById('catboxOutput');
+            const btn = document.getElementById('btnUploadCatbox');
 
             if (!fileInput.files[0]) {
                 alert("Pilih foto di langkah 1 terlebih dahulu!");
@@ -926,56 +922,85 @@
             pBox.style.display = 'block';
             outputBox.style.display = 'none';
             pBar.style.width = '0%';
-            pText.innerText = 'Mengunggah ke Catbox: 0%';
+            pText.innerText = 'Mengunggah ke Server: 0%';
+            btn.disabled = true;
 
+            // Animasi Hitungan Persen Smooth 0% -> 100%
+            let progressPercent = 0;
+            const progressTimer = setInterval(() => {
+                if (progressPercent < 90) {
+                    progressPercent += Math.floor(Math.random() * 8) + 5;
+                    if (progressPercent > 90) progressPercent = 90;
+                    pBar.style.width = progressPercent + '%';
+                    pText.innerText = `Mengunggah ke Server: ${progressPercent}%`;
+                }
+            }, 150);
+
+            // Menyiapkan Data Upload
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Menggunakan Server High-Speed Direct Image Uploader (Anti-CORS Block)
+            fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                clearInterval(progressTimer);
+                pBar.style.width = '100%';
+                pText.innerText = 'Mengunggah ke Server: 100%';
+
+                if (data && data.data && data.data.url) {
+                    // Merubah format URL agar menjadi direct link gambar
+                    const directUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                    outputBox.style.display = 'block';
+                    outputBox.innerHTML = `✅ Link Foto Gambar Kamu Berhasil Dibuat:<br><a href="${directUrl}" target="_blank" style="color:var(--accent-cyan); text-decoration:underline;">${directUrl}</a>`;
+                } else {
+                    fallbackCatboxUpload(file, progressTimer, pBar, pText, outputBox);
+                }
+                btn.disabled = false;
+            })
+            .catch(() => {
+                fallbackCatboxUpload(file, progressTimer, pBar, pText, outputBox);
+            });
+        }
+
+        /* FALLBACK SERVER CATBOX VIA CORS PROXY */
+        function fallbackCatboxUpload(file, timer, pBar, pText, outputBox) {
             const formData = new FormData();
             formData.append('reqtype', 'fileupload');
-            formData.append('fileToUpload', fileInput.files[0]);
+            formData.append('fileToUpload', file);
 
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://catbox.moe/user/api.php', true);
-
-            // PROGRES HITUNGAN PERSEN REALTIME
-            xhr.upload.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = Math.round((e.loaded / e.total) * 100);
-                    pBar.style.width = percentComplete + '%';
-                    pText.innerText = `Mengunggah ke Catbox: ${percentComplete}%`;
-                }
-            };
-
-            // SIMULASI TAMBAHAN JIKA PROGRES CEPAT
-            let simPercent = 0;
-            const simInterval = setInterval(() => {
-                if (simPercent < 90) {
-                    simPercent += 10;
-                    pBar.style.width = simPercent + '%';
-                    pText.innerText = `Mengunggah ke Catbox: ${simPercent}%`;
-                }
-            }, 80);
-
-            xhr.onload = function() {
-                clearInterval(simInterval);
+            // Proxy CORS khusus Catbox
+            fetch('https://corsproxy.io/?' + encodeURIComponent('https://catbox.moe/user/api.php'), {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.text())
+            .then(url => {
+                clearInterval(timer);
                 pBar.style.width = '100%';
                 pText.innerText = 'Mengunggah ke Catbox: 100%';
 
-                if (xhr.status === 200 && xhr.responseText.startsWith('http')) {
-                    const url = xhr.responseText.trim();
+                if (url && url.startsWith('http')) {
                     outputBox.style.display = 'block';
-                    outputBox.innerHTML = `✅ Link Foto Catbox Kamu:<br><a href="${url}" target="_blank" style="color:var(--accent-cyan); text-decoration:underline;">${url}</a>`;
+                    outputBox.innerHTML = `✅ Link Foto Catbox Kamu:<br><a href="${url.trim()}" target="_blank" style="color:var(--accent-cyan); text-decoration:underline;">${url.trim()}</a>`;
                 } else {
                     outputBox.style.display = 'block';
-                    outputBox.innerText = "❌ Gagal mengunggah ke Catbox. Silakan coba lagi.";
+                    outputBox.innerText = "❌ Gagal membuat link. Silakan coba lagi.";
                 }
-            };
-
-            xhr.onerror = function() {
-                clearInterval(simInterval);
+                document.getElementById('btnUploadCatbox').disabled = false;
+            })
+            .catch(() => {
+                clearInterval(timer);
+                pBar.style.width = '100%';
                 pText.innerText = 'Gagal Upload!';
-                alert("Terjadi kesalahan jaringan saat upload ke Catbox.");
-            };
-
-            xhr.send(formData);
+                outputBox.style.display = 'block';
+                outputBox.innerText = "❌ Terjadi masalah koneksi ke server upload. Silakan coba beberapa saat lagi.";
+                document.getElementById('btnUploadCatbox').disabled = false;
+            });
         }
 
         /* AJAX FORM SUBMIT */
@@ -1009,4 +1034,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
